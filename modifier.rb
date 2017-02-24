@@ -3,14 +3,18 @@ require File.expand_path('lib/helper', File.dirname(__FILE__))
 require 'csv'
 include Helper
 
+# Reads the latest performance data file
+# Produces a sorted file based on some attribute(Clicks)
+# Processes the sorted file and calculates the commission values
 class Modifier
   KEYWORD_UNIQUE_ID = 'Keyword Unique ID'.freeze
   LAST_VALUE_WINS = ['Account ID', 'Account Name', 'Campaign', 'Ad Group', 'Keyword', 'Keyword Type', 'Subid', 'Paused', 'Max CPC', 'Keyword Unique ID', 'ACCOUNT', 'CAMPAIGN', 'BRAND', 'BRAND+CATEGORY', 'ADGROUP', 'KEYWORD'].freeze
   LAST_REAL_VALUE_WINS = ['Last Avg CPC', 'Last Avg Pos'].freeze
   INT_VALUES = ['Clicks', 'Impressions', 'ACCOUNT - Clicks', 'CAMPAIGN - Clicks', 'BRAND - Clicks', 'BRAND+CATEGORY - Clicks', 'ADGROUP - Clicks', 'KEYWORD - Clicks'].freeze
   FLOAT_VALUES = ['Avg CPC', 'CTR', 'Est EPC', 'newBid', 'Costs', 'Avg Pos'].freeze
-
-  DEFAULT_CSV_OPTIONS = { col_sep: "\t", headers: :first_row }.freeze
+  COMMISSION_VALUES = ['Commission Value', 'ACCOUNT - Commission Value', 'CAMPAIGN - Commission Value', 'BRAND - Commission Value', 'BRAND+CATEGORY - Commission Value', 'ADGROUP - Commission Value', 'KEYWORD - Commission Value'].freeze
+  NUMBER_OF_COMMISSIONS = ['number of commissions'].freeze
+  DEFAULT_CSV_OPTIONS = { col_sep: ",", headers: :first_row }.freeze
 
   LINES_PER_FILE = 120_000
 
@@ -19,7 +23,7 @@ class Modifier
     @cancellation_factor = cancellation_factor
   end
 
-  def modify(_output, input)
+  def modify(output, input)
     input = sort(input)
 
     input_enumerator = lazy_read(input)
@@ -34,19 +38,19 @@ class Modifier
         yielder.yield(combine_values(merged))
       end
     end
-    write_to_files
+    write_to_files(output, merger)
   end
 
   private
 
   # Write output to multiple files if needed
   # each file shall have at most LINES_PER_FILE lines in it
-  def write_to_files
+  def write_to_files(output, merger)
     done = false
     file_index = 0
     file_name = output.gsub('.txt', '')
     until done
-      CSV.open(file_name + "_#{file_index}.txt", 'wb', col_sep: "\t", headers: :first_row, row_sep: "\r\n") do |csv|
+      CSV.open(file_name + "_#{file_index}.txt", 'wb', DEFAULT_CSV_OPTIONS) do |csv|
         headers_written = false
         line_count = 0
         while line_count < LINES_PER_FILE
@@ -82,7 +86,7 @@ class Modifier
       hash[key] = hash[key].last
     end
     LAST_REAL_VALUE_WINS.each do |key|
-      hash[key] = hash[key].select { |v| !(v.nil? || v.zero? || v == '0' || v == '') }.last
+      hash[key] = hash[key].select { |v| !(v.nil? || v.to_f.zero? || v == '0' || v == '') }.last
     end
     INT_VALUES.each do |key|
       hash[key] = hash[key][0].to_s
@@ -90,10 +94,10 @@ class Modifier
     FLOAT_VALUES.each do |key|
       hash[key] = hash[key][0].from_german_to_f.to_german_s
     end
-    ['number of commissions'].each do |key|
+    NUMBER_OF_COMMISSIONS.each do |key|
       hash[key] = (@cancellation_factor * hash[key][0].from_german_to_f).to_german_s
     end
-    ['Commission Value', 'ACCOUNT - Commission Value', 'CAMPAIGN - Commission Value', 'BRAND - Commission Value', 'BRAND+CATEGORY - Commission Value', 'ADGROUP - Commission Value', 'KEYWORD - Commission Value'].each do |key|
+    COMMISSION_VALUES.each do |key|
       hash[key] = (@cancellation_factor * @saleamount_factor * hash[key][0].from_german_to_f).to_german_s
     end
     hash
@@ -130,7 +134,7 @@ class Modifier
   end
 
   def write(content, headers, output)
-    CSV.open(output, 'wb', col_sep: "\t", headers: :first_row, row_sep: "\r\n") do |csv|
+    CSV.open(output, 'wb', DEFAULT_CSV_OPTIONS) do |csv|
       csv << headers
       content.each do |row|
         csv << row
