@@ -1,0 +1,4 @@
+Clicks,Keyword Unique ID,Account ID,Account Name,Campaign,Ad Group,Keyword,Keyword Type,Subid,Paused,Max CPC,ACCOUNT,CAMPAIGN,BRAND,BRAND+CATEGORY,ADGROUP,KEYWORD,Last Avg CPC,Last Avg Pos,Impressions,ACCOUNT - Clicks,CAMPAIGN - Clicks,BRAND - Clicks,BRAND+CATEGORY - Clicks,ADGROUP - Clicks,KEYWORD - Clicks,Avg CPC,CTR,Est EPC,newBid,Costs,Avg Pos,Commission Value,ACCOUNT - Commission Value,CAMPAIGN - Commission Value,BRAND - Commission Value,BRAND+CATEGORY - Commission Value,ADGROUP - Commission Value,KEYWORD - Commission Value,number of commissions
+67,52,30,14,80,74,68,39,94,21,37,67,77,56,67,7,83,70,71,61,42,97,41,32,76,87,62,1,41,12,26,92,76,87,62,1,41,12,26,92
+97,70,89,58,28,20,46,67,73,4,79,52,77,68,12,90,53,77,77,99,93,5,59,13,64,89,61,9,24,22,53,30,64,89,61,9,24,22,53,30
+70,40,62,36,99,5,28,83,73,58,25,66,22,25,72,45,93,96,23,22,38,24,8,17,23,80,15,19,17,68,35,98,23,80,15,19,17,68,35,98

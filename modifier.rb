@@ -153,10 +153,12 @@ class Modifier
   end
 end
 
-modified = input = latest_file_in_dir('performance', 'data')
-modification_factor = 1
-cancellaction_factor = 0.4
-modifier = Modifier.new(modification_factor, cancellaction_factor)
-modifier.modify(modified, input)
+if __FILE__ == $0
+  modified = input = latest_file_in_dir('performance', 'data')
+  modification_factor = 1
+  cancellaction_factor = 0.4
+  modifier = Modifier.new(modification_factor, cancellaction_factor)
+  modifier.modify(modified, input)
 
-puts 'DONE modifying'
+  puts 'DONE modifying'
+end
