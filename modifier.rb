@@ -38,6 +38,8 @@ class Modifier
 	INT_VALUES = ['Clicks', 'Impressions', 'ACCOUNT - Clicks', 'CAMPAIGN - Clicks', 'BRAND - Clicks', 'BRAND+CATEGORY - Clicks', 'ADGROUP - Clicks', 'KEYWORD - Clicks']
 	FLOAT_VALUES = ['Avg CPC', 'CTR', 'Est EPC', 'newBid', 'Costs', 'Avg Pos']
 
+  DEFAULT_CSV_OPTIONS = { :col_sep => "\t", :headers => :first_row }
+
   LINES_PER_FILE = 120000
 
 	def initialize(saleamount_factor, cancellation_factor)
@@ -143,8 +145,6 @@ class Modifier
 		result
 	end
 
-	DEFAULT_CSV_OPTIONS = { :col_sep => "\t", :headers => :first_row }
-
 	def parse(file)
 		CSV.read(file, DEFAULT_CSV_OPTIONS)
 	end
@@ -166,7 +166,6 @@ class Modifier
 		end
 	end
 
-	public
 	def sort(file)
 		output = "#{file}.sorted"
 		content_as_table = parse(file)
