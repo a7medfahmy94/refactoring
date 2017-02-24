@@ -31,3 +31,19 @@ describe Helper do
 		end
 	end
 end
+
+describe String do
+  context "#from_german_to_f" do
+  	it "should replace comma with period" do
+  	  expect("12,3".from_german_to_f).to eq(12.3)
+  	end
+  end
+end
+
+describe Float do
+  context "#to_german_s" do
+  	it "should replace period with comma" do
+  	  expect(12.3.to_german_s).to eq("12,3")
+  	end
+  end
+end

@@ -3,18 +3,6 @@ require File.expand_path('lib/helper', File.dirname(__FILE__))
 require 'csv'
 include Helper
 
-class String
-	def from_german_to_f
-		self.gsub(',', '.').to_f
-	end
-end
-
-class Float
-	def to_german_s
-		self.to_s.gsub('.', ',')
-	end
-end
-
 class Modifier
 
 	KEYWORD_UNIQUE_ID = 'Keyword Unique ID'
